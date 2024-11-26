@@ -31,42 +31,46 @@ def get_phone_datetime(photo_path: str):
     return image_datetime
 
 
-photos = os.listdir(PHOTO_DIR)
-count = 0
-pass_count = 0
-
-for photo in photos:
-    src_path = os.path.join(PHOTO_DIR, photo)
-    if not filetype.is_image(src_path):
-        continue
-    photo_datetime = get_phone_datetime(src_path)
-    dst_name = photo_datetime.strftime(NAME_FORMAT)
-    ext = os.path.splitext(src_path)[1]
-    dst_path = os.path.join(PHOTO_DIR, dst_name + ext)
-    if src_path != dst_path:
-        if not os.path.exists(dst_path):
-            os.rename(src_path, dst_path)
-            count = count + 1
-            print(src_path, '--->>>', dst_path)
-        else:
-            for sss in string.ascii_uppercase:
-                dst_path = os.path.join(PHOTO_DIR, dst_name + sss + ext)
-                if src_path != dst_path:
-                    if not os.path.exists(dst_path):
-                        os.rename(src_path, dst_path)
-                        count = count + 1
-                        print(src_path, '--->>>', dst_path)
-                        break
+def rename_photos(photos_dir):
+    photos = os.listdir(photos_dir)
+    count = 0
+    pass_count = 0
+    for photo in photos:
+        src_path = os.path.join(photos_dir, photo)
+        if not filetype.is_image(src_path):
+            continue
+        photo_datetime = get_phone_datetime(src_path)
+        dst_name = photo_datetime.strftime(NAME_FORMAT)
+        ext = os.path.splitext(src_path)[1]
+        dst_path = os.path.join(photos_dir, dst_name + ext)
+        if src_path != dst_path:
+            if not os.path.exists(dst_path):
+                os.rename(src_path, dst_path)
+                count = count + 1
+                print(src_path, '--->>>', dst_path)
+            else:
+                for sss in string.ascii_uppercase:
+                    dst_path = os.path.join(photos_dir, dst_name + sss + ext)
+                    if src_path != dst_path:
+                        if not os.path.exists(dst_path):
+                            os.rename(src_path, dst_path)
+                            count = count + 1
+                            print(src_path, '--->>>', dst_path)
+                            break
+                        else:
+                            continue
                     else:
-                        continue
-                else:
-                    pass_count = pass_count + 1
-                    print(src_path, 'passed')
-                    break
-    else:
-        print(src_path, 'passed')
-        pass_count = pass_count + 1
+                        pass_count = pass_count + 1
+                        print(src_path, 'passed')
+                        break
+        else:
+            print(src_path, 'passed')
+            pass_count = pass_count + 1
+
+    print(f'suceeded: {count}')
+    print('passed:', pass_count)
 
 
-print(f'suceeded: {count}')
-print('passed:', pass_count)
+if __name__ == 'main':
+    rename_photos(PHOTO_DIR)
+
